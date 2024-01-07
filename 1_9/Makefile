@@ -2,7 +2,7 @@ obj = longest_line
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
-  out = $(obj)
+  out = $(obj).out
 else
   out = $(obj).exe
 endif
