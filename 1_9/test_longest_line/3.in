@@ -1,0 +1,7 @@
+Usage: wc [OPTION]... [FILE]...
+  or:  wc [OPTION]... --files0-from=F
+Print newline, word, and byte counts f
+or each FILE, and a total line ifmore t
+han one FILE is specified.  A word is an
+on-zero-length sequence ofprintable chara
+cters delimited by white space. With no FILE, or when FILE is -, read standard input.
