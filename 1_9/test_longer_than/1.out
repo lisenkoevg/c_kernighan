@@ -1,0 +1,6 @@
+MIN_OUTPUT: 70
+Print newline, word, and byte counts for each FILE, and a total line if
+more than one FILE is specified.  A word is a non-zero-length sequence of
+The options below may be used to select which counts are printed, always in
+the following order: newline, word, character, byte, maximum line length.
+                           If F is - then read names from standard input

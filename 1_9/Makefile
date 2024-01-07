@@ -1,20 +1,21 @@
-obj = longest_line
+obj = longest_line.c longer_than.c lib.c
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
-  out = $(obj).out
+  ext = .out
 else
-  out = $(obj).exe
+  ext = .exe
 endif
 
-all: $(obj)
+all: longest_line longer_than
 
-longest_line: $(obj).c
-	gcc -o $(out) -g -Wall -Werror $(obj).c
+longest_line: longest_line.c lib.c
+	gcc -o longest_line$(ext) -g -Wall -Werror longest_line.c
 
 clean:
 	rm *.exe
 
 test:
-	../runtest.bat $(obj)
+	../runtest.bat longest_line
+	../runtest.bat longer_than 70
 

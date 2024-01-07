@@ -1,0 +1,9 @@
+MAX_LINE_LENGTH: 40
+  1 | Usage: wc [OPTION]... [FILE]...
+  2 |   or:  wc [OPTION]... --files0-from=F
+  3 | Print newline, word, and byte counts f
+  4 | or each FILE, and a total line ifmore t
+  5 | han one FILE is specified.  A word is an
+  6 | on-zero-length sequence ofprintable chara
+  7 | cters delimited by white space. With no FILE, or when FILE is -, read standard input.
+Maxlength: 86, line 7
