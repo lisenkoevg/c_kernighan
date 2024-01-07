@@ -1,0 +1,28 @@
+  1 | Usage: wc [OPTION]... [FILE]...^
+  2 |   or:  wc [OPTION]... --files0-from=F^
+  3 | Print newline, word, and byte counts for each FILE, and a total line if^
+  4 | more than one FILE is specified.  A word is a non-zero-length sequence of^
+  5 | printable characters delimited by white space.^
+  6 | ^
+  7 | With no FILE, or when FILE is -, read standard input.^
+  8 | ^
+  9 | The options below may be used to select which counts are printed, always in^
+ 10 | the following order: newline, word, character, byte, maximum line length.^
+ 11 |   -c, --bytes            print the byte counts^
+ 12 |   -m, --chars            print the character counts^
+ 13 |   -l, --lines            print the newline counts^
+ 14 |       --files0-from=F    read input from the files specified by^
+ 15 |                            NUL-terminated names in file F;^
+ 16 |                            If F is - then read names from standard input^
+ 17 |   -L, --max-line-length  print the maximum display width^
+ 18 |   -w, --words            print the word counts^
+ 19 |       --help     display this help and exit^
+ 20 |       --version  output version information and exit^
+ 21 | ^
+ 22 | GNU coreutils online help: <https://www.gnu.org/software/coreutils/>^
+ 23 | Report any translation bugs to <https://translationproject.org/team/>^
+ 24 | Full documentation <https://www.gnu.org/software/coreutils/wc>^
+ 25 | or available locally via: info '(coreutils) wc invocation'^
+
+  9 | "The options below may be used to select which counts are printed, always in^"
+76

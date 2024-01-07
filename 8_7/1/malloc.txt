@@ -1,0 +1,30 @@
+ 1    static Header base;          /* empty list to get started */
+ 2    static Header *freep = NULL; /* start of free list */
+      
+ 3    /* malloc: general-purpose storage allocator */
+ 4    void *malloc(unsigned nbytes) {
+ 5      Header *p, *prevp;
+ 6      Header *morecore(unsigned);
+ 7      unsigned nunits;
+ 8      nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
+ 9      if ((prevp = freep) == NULL) { /* no free list yet */
+10        base.s.ptr = freep = prevp = &base;
+11        base.s.size = 0;
+12      }
+13      for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+14        if (p->s.size >= nunits) { /* big enough */
+15          if (p->s.size == nunits) /* exactly */
+16            prevp->s.ptr = p->s.ptr;
+17          else { /* allocate tail end */
+18            p->s.size -= nunits;
+19            p += p->s.size;
+20            p->s.size = nunits;
+21          }
+22          freep = prevp;
+23          return (void *)(p + 1);
+24        }
+25        if (p == freep) /* wrapped around free list */
+26          if ((p = morecore(nunits)) == NULL)
+27            return NULL; /* none left */
+28      }
+29    }

@@ -1,0 +1,13 @@
+ 1    static Header *morecore(unsigned nu) {
+ 2      char *cp, *sbrk(int);
+ 3      Header *up;
+ 4      if (nu < NALLOC)
+ 5        nu = NALLOC;
+ 6      cp = sbrk(nu * sizeof(Header));
+ 7      if (cp == (char *)-1) /* no space at all */
+ 8        return NULL;
+ 9      up = (Header *)cp;
+10      up->s.size = nu;
+11      free((void *)(up + 1));
+12      return freep;
+13    }

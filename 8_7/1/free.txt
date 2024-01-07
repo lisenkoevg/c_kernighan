@@ -1,0 +1,19 @@
+ 1    /* free: put block ap in free list */
+ 2    void free(void *ap) {
+ 3      Header *bp, *p;
+ 4      bp = (Header *)ap - 1; /* point to block header */
+ 5      for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+ 6        if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+ 7          break;                         /* freed block at start or end of arena */
+ 8      if (bp + bp->s.size == p->s.ptr) { /* join to upper nbr */
+ 9        bp->s.size += p->s.ptr->s.size;
+10        bp->s.ptr = p->s.ptr->s.ptr;
+11      } else
+12        bp->s.ptr = p->s.ptr;
+13      if (p + p->s.size == bp) { /* join to lower nbr */
+14        p->s.size += bp->s.size;
+15        p->s.ptr = bp->s.ptr;
+16      } else
+17        p->s.ptr = bp;
+18      freep = p;
+19    }
