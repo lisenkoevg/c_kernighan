@@ -17,7 +17,7 @@ pushd %testdir%
 set c=0 & set cp=0 & set cf=0
 for %%i in (*.in) do (
   set tn=%%~ni
-  %pf% < %%i > !tn!_actual.out
+  %pf% %2 < %%i > !tn!_actual.out
   diff -N !tn!.out !tn!_actual.out > nul && (
     set /a cp=cp+1 > nul
     del !tn!_actual.out
@@ -28,10 +28,30 @@ for %%i in (*.in) do (
   )
   set /a c=c+1 > nul
 )
-if %c%==%cp% nircmd beep 5000 100
-if not %c%==%cp% nircmd beep 1000 100
-echo.
-echo Total: %c%, passed: %cp%, FAILED: %cf%
 popd
-
+call :setESC
+echo.
+if %c%==%cp% (
+  nircmd beep 5000 100
+  call :echoGreen Total: %c%, passed: %cp%, FAILED: %cf%
+) else (
+  nircmd beep 1000 100
+  call :echoRed Total: %c%, passed: %cp%, FAILED: %cf%
+)
 endlocal
+
+goto :eof
+:echoRed
+  echo !ESC![31m%*!ESC![0m
+goto :eof
+
+:echoGreen
+  echo !ESC![32m%*!ESC![0m
+goto :eof
+
+:setESC
+  for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
+    set ESC=%%b
+    goto :eof
+  )
+goto :eof
