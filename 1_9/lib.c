@@ -17,9 +17,3 @@ void copy_(char from[], char to[]) {
   while ((to[i++] = from[i]) != '\0')
     ;
 }
-
-void print_array_hex(char arr[], int size) {
-  for (int i = 0; i <= size; i++)
-    printf("%#04x ", arr[i]);
-  printf("\n");
-}
