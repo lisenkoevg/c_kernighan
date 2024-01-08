@@ -6,7 +6,6 @@ typedef struct {
 #define ITERATOR(arr, from, to, action) \
   for (int i = (from); i < (to); i++) action
 
-char is_blank(char c); 
 void init_array(int *arr, int size); 
 void print_array(int *arr, int size); 
 void print_array_ch(int *arr, int size); 

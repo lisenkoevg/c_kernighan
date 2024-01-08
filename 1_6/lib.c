@@ -5,12 +5,6 @@
 
 replacer_t non_pr[NON_PRINT_MAX];
 
-char is_blank(char c) {
-  if (c == ' ' || c == '\n' || c == '\r' || c == '\t')
-    return 1;
-  return 0;
-}
-
 void init_array(int *arr, int size) {
   for (int i = 0; i < size; i++)
     *(arr + i) = 0;
