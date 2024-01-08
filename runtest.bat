@@ -1,6 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
 
+if "%1"=="*" (
+  goto :runAll
+  goto :eof
+)
 if "%1"=="" (
   echo Usage: %0 program.exe
   goto :eof
@@ -40,6 +44,14 @@ if %c%==%cp% (
 )
 endlocal
 
+goto :eof
+:runAll
+  for /f %%i in ('ls -1d *[1]_[0-9]*') do (
+    pushd %%i
+    echo !cd!
+    make && make test && make clean
+    popd
+  )
 goto :eof
 :echoRed
   echo !ESC![31m%*!ESC![0m
