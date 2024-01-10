@@ -6,7 +6,8 @@ if "%1"=="*" (
   goto :eof
 )
 if "%1"=="" (
-  echo Usage: %0 program.exe
+  echo Usage: %0 [program] [filemask^|*] [param1]
+  echo        %0 * - make ^& make test ^& make clean - for all subdirs
   goto :eof
 )
 set p=%~n1
@@ -17,11 +18,20 @@ if not exist %pexe% echo Program "%pexe%" not found && goto :eof
 set testdir=test_%p%
 if not exist %testdir% echo Test dir %testdir% not found && goto :eof
 
+set mask=*
+if not "%2"=="" set mask=%2
+
+set param1=
+if not "%3"=="" set param1=%3
+
+echo.
+echo Running tests in directory %testdir%, mask=%mask%:
 pushd %testdir%
 set c=0 & set cp=0 & set cf=0
-for %%i in (*.in) do (
+for %%i in (%mask%.in) do (
   set tn=%%~ni
-  %pf% %2 < %%i > !tn!_actual.out
+
+  %pf% %param1% < %%i > !tn!_actual.out
   diff -N !tn!.out !tn!_actual.out > nul && (
     set /a cp=cp+1 > nul
     del !tn!_actual.out

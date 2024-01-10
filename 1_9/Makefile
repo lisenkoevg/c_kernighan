@@ -25,6 +25,6 @@ clean:
 
 test:
 	../runtest.bat longest_line
-	../runtest.bat longer_than 70
+	../runtest.bat longer_than \* 70
 	../runtest.bat remove_trailing_blanks
 	../runtest.bat reverse_
