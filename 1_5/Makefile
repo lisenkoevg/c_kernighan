@@ -42,4 +42,5 @@ test:
 	../runtest.bat split_word
 	../runtest.bat split_char
 
-  
+.PHONY: Makefile
+

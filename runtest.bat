@@ -59,7 +59,7 @@ goto :eof
   for /f %%i in ('ls -1d *[1]_[0-9]*') do (
     pushd %%i
     echo !cd!
-    make && make test && make clean
+    make -Br -j --output-sync=target && make test && make clean
     popd
   )
 goto :eof
