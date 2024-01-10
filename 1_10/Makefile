@@ -6,10 +6,20 @@ else
 endif
 gcc_params = -g -Wall -Werror
 
-all: detab
+objnames = detab
+objects = $(addsuffix $(ext), $(objnames))
 
-detab: detab.c
-	gcc $(gcc_params) -o detab$(ext) detab.c
+all: $(objects)
 
+$(objects): %$(ext): %.c
+	gcc $(gcc_params) -o $@ $<
+
+.PHONY: clean
 clean:
-	rm -f *.exe
+	rm -f $(objects)
+
+.PHONY: Makefile
+
+test:
+	../runtest.bat detab 1\* 7
+	../runtest.bat detab 2\* 13
