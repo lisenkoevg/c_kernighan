@@ -6,7 +6,7 @@ else
 endif
 gcc_params = -g -Wall -Werror
 
-objnames = detab
+objnames = detab entab
 objects = $(addsuffix $(ext), $(objnames))
 
 all: $(objects)
@@ -23,3 +23,4 @@ clean:
 test:
 	../runtest.bat detab 1\* 7
 	../runtest.bat detab 2\* 13
+	../runtest.bat entab \*
