@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "../common/lib.c"
+
 #define TABSIZE 7
 
 int main(int argc, char **argv) {
@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     } else {
       putchar(c);
       if (c != '\n')
-        i++;
+        ++i;
       else
         i = 0;
     }
