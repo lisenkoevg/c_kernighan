@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
   if (argc > 1)
     min_output = atoi(argv[1]);
   printf("MIN_OUTPUT: %d\n", min_output);
-  while ((length = getline_(line, MAX_LINE_LENGTH)) > 0) {
+  while ((length = mygetline(line, MAX_LINE_LENGTH)) > 0) {
     if (length > min_output)
       printf("%s", line);
   }

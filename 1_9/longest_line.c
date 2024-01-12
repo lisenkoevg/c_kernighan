@@ -7,7 +7,7 @@
 #include "lib.c"
 #define MAX_LINE_LENGTH 40
 
-int getline_(char line[], int lim);
+int mygetline(char line[], int lim);
 void copy_(char from[], char to[]);
 void print_array_hex(char arr[], int size);
 
@@ -19,7 +19,7 @@ int main() {
   length = maxlength = maxindex = 0;
   int counter = 1;
   int acc = 0;
-  while ((length = getline_(line, MAX_LINE_LENGTH)) > 0) {
+  while ((length = mygetline(line, MAX_LINE_LENGTH)) > 0) {
     if (acc == 0)
       printf("%3d | ", counter);
     if (length == MAX_LINE_LENGTH && line[MAX_LINE_LENGTH - 1] != '\n') {

@@ -12,7 +12,7 @@ int main() {
   char line[MAX_LINE_LENGTH];
   int length;
 
-  while ((length = getline_(line, MAX_LINE_LENGTH)) > 0) {
+  while ((length = mygetline(line, MAX_LINE_LENGTH)) > 0) {
     int len = length;
     for (int i = 0; i < length; i++)
       if (line[length - i - 1] == '\n') {

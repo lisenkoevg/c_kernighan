@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
   char line[MAX_LINE_LENGTH];
   int length;
 
-  while ((length = getline_(line, MAX_LINE_LENGTH)) > 0) {
+  while ((length = mygetline(line, MAX_LINE_LENGTH)) > 0) {
     if (remove_trailing_blanks(line, length) == 0)
       continue;
     printf("%s\n", line);
