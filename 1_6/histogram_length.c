@@ -3,7 +3,7 @@
 // Print histogram of words length
 //
 
-#include "../common/lib.h"
+#include "../common/common.h"
 #include "./bars.h"
 #include "./lib.h"
 #include <assert.h>

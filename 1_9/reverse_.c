@@ -3,7 +3,8 @@
 // Reverse string, print intput reversed each line
 //
 
-#include "./lib.c"
+#include "../common/common.h"
+#include "lib.c"
 #define MAX_LINE_LENGTH 1000
 
 void reverse_(char line[], int length);

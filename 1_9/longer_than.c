@@ -3,6 +3,7 @@
 // Ouput lines longer than
 //
 
+#include "../common/common.h"
 #include "lib.c"
 #include <stdio.h>
 #include <stdlib.h>

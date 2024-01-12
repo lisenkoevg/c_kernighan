@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "lib.h"
+#include "common.h"
 
 char is_blank(char c) {
   if (c == ' ' || c == '\n' || c == '\r' || c == '\t')
@@ -21,3 +21,16 @@ int remove_trailing_blanks(char *line, int length) {
   int new_length = length - i;
   return new_length;
 }
+
+int mygetline(char *line, int lim) {
+  char c;
+  int i;
+  for (i = 0; (i < lim) && ((c = getchar()) != EOF) && c != '\n'; i++) {
+    line[i] = c;
+  }
+  if (c == '\n')
+    line[i++] = '\n';
+  line[i] = '\0';
+  return i;
+}
+

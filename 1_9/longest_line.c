@@ -3,8 +3,9 @@
 // Ouput longest input line
 // 
 
-#include <stdio.h>
+#include "../common/common.h"
 #include "lib.c"
+#include <stdio.h>
 #define MAX_LINE_LENGTH 40
 
 int mygetline(char line[], int lim);

@@ -3,7 +3,7 @@
 // Remove trailing blank symbols and empty lines from input
 //
 
-#include "../common/lib.h"
+#include "../common/common.h"
 #include "lib.c"
 #include <stdio.h>
 #include <stdlib.h>
