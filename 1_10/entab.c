@@ -3,6 +3,7 @@
 // Replace spances with tabs
 //
 
+#include "../common/common.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -48,18 +49,18 @@ int main(int argc, char **argv) {
       is_eol = 0;
     }
   }
-  printf("counter in: %u, counter out: %u\n", c_in, c_out);
+//   printf("counter in: %u, counter out: %u\n", c_in, c_out);
   return 0;
 }
 
 unsigned process_column(char *column, unsigned char length, unsigned char is_eol) {
   unsigned count = 0;
-  
+
   int pos = length - 1;
   if (is_eol) {
 //  remove trailing spaces before end of line
     while (pos >= 0 && column[pos--] == '\0')
-      length--; 
+      length--;
     for (unsigned j = 1; j <= length; j++) {
       if (column[length - j] == '\0')
         continue;
@@ -79,4 +80,4 @@ unsigned process_column(char *column, unsigned char length, unsigned char is_eol
   for (unsigned j = 0; j < length; j++)
     column[j] = '\0';
   return count;
-} 
+}

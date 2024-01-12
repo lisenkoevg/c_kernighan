@@ -4,19 +4,22 @@ ifeq ($(UNAME), Linux)
 else
   ext = .exe
 endif
-gcc_params = -g -Wall -Werror
 
-objnames = detab entab
-objects = $(addsuffix $(ext), $(objnames))
+gcc_params = -g -Wall -Werror
+objects = detab entab
 
 all: $(objects)
 
-$(objects): %$(ext): %.c
-	gcc $(gcc_params) -o $@ $<
+# include ../common/Makefile
+
+entab: ../common/common.o
+
+$(objects): %: %.c
+	gcc $(gcc_params) -o $@$(ext) $<
 
 .PHONY: clean
 clean:
-	rm -f $(objects)
+	rm -f *.exe
 
 .PHONY: Makefile
 
