@@ -4,3 +4,4 @@
 *.swp
 Session.vim
 tags
+*.o
