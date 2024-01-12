@@ -9,17 +9,13 @@
 #include <stdlib.h>
 
 #define MAX_LINE_LENGTH 1000
-
 int main(int argc, char **argv) {
   char line[MAX_LINE_LENGTH];
   int length;
 
   while ((length = getline_(line, MAX_LINE_LENGTH)) > 0) {
-    int i;
-    for (i = 0; i < length && is_blank(line[length - 1 - i]); i++)
-      ;
-    if (i == length) continue;
-    line[length - i] = '\0';
+    if (remove_trailing_blanks(line, length) == 0)
+      continue;
     printf("%s\n", line);
   }
   return 0;
