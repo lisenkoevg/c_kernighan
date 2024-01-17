@@ -25,13 +25,13 @@ int main(int argc, char **argv) {
     assert(tabsize > 0);
   }
   printf("tabsize: %d\n\n", tabsize);
+
   char c;
   int state = OUT;
   int laststart = 0;
-  int curpos = 0;
-  while ((c = getchar()) != EOF) {
+  int col = 0;
 
-#if SWITCH 
+  while ((c = getchar()) != EOF) {
     switch (c) {
       case EOL: 
       case CR: 
@@ -39,77 +39,48 @@ int main(int argc, char **argv) {
           state = OUT;
           putchar(TAB);
         }
-        curpos = 0;
+        col = 0;
         laststart = 0;
         putchar(c);
         break;
       case SPACE: 
+        if (col == tabsize)
+          col = 0;
+
         if (state == IN) {
-          if (curpos % tabsize == 0) {
-            laststart = curpos;
+          if (col == 0) {
             putchar(TAB);
+            laststart = 0;
           }
+          col++;
         } else {
           state = IN;
-          laststart = curpos;
+          laststart = col;
+          col++;
         }
         break;
       default:
+        if (col == tabsize)
+          col = 0;
         if (state == IN) {
-          if (curpos % tabsize == 0)
+          if (col == 0)
             putchar(TAB);
           else {
-            if ((curpos - laststart == 1) && (laststart % tabsize != 0))
+            if ((col - laststart == 1) && (laststart != 0)) {
               putchar(SPACE);
-            else
+              col++;
+            } else {
               putchar(TAB);
+              col = 0;
+            }
           }
           state = OUT;
           laststart = 0;
         }
         putchar(c);
+        col++;
         break;
     }
-#endif
-
-#if !SWITCH
-    if (c == EOL) {
-      if (state == IN) {
-        state = OUT;
-        putchar(TAB);
-      }
-      curpos = 0;
-      laststart = 0;
-      putchar(EOL);
-    } else if (c == SPACE) {
-      if (state == IN) {
-        if (curpos % tabsize == 0) {
-          laststart = curpos;
-          putchar(TAB);
-        }
-      } else {
-        state = IN;
-        laststart = curpos;
-      }
-    } else {
-      if (state == IN) {
-        if (curpos % tabsize == 0)
-          putchar(TAB);
-        else {
-          if ((curpos - laststart == 1) && (laststart % tabsize != 0))
-            putchar(SPACE);
-          else
-            putchar(TAB);
-        }
-        state = OUT;
-        laststart = 0;
-      }
-      putchar(c);
-    }
-#endif
-
-    if (c != EOL)
-      curpos++;
   }
   return 0;
 }
