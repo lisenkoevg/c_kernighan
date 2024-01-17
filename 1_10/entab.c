@@ -1,20 +1,22 @@
 //
 // 1.10 Exc 1.21
-// Replace spances with tabs
+// Replace spaces with tabs
 //
 
-#include "../common/common.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #define TABSIZE 4
-#define INTAB 1
-#define OUTTAB 0
+
+#define IN 1
+#define OUT 0
 #define SPACE ' '
 #define TAB '\t'
+#define EOL '\n'
+#define CR '\r'
 
-unsigned process_column(char *column, unsigned char length, unsigned char is_eol);
+#define SWITCH 1
 
 int main(int argc, char **argv) {
   unsigned char tabsize = TABSIZE;
@@ -22,62 +24,93 @@ int main(int argc, char **argv) {
     tabsize = atoi((const char *)argv[1]);
     assert(tabsize > 0);
   }
-
-  char col[tabsize];
-  for (int j = 0; j < tabsize; j++)
-    col[j] = '\0';
-
+  printf("tabsize: %d\n\n", tabsize);
   char c;
-  unsigned char is_eol = 0;
-  unsigned i, c_in, c_out;
-  i = c_in = c_out = 0;
+  int state = OUT;
+  int laststart = 0;
+  int curpos = 0;
   while ((c = getchar()) != EOF) {
-    c_in++;
-    if (c != '\n') {
-      col[i] = c;
+
+#if SWITCH 
+    switch (c) {
+      case EOL: 
+      case CR: 
+        if (state == IN) {
+          state = OUT;
+          putchar(TAB);
+        }
+        curpos = 0;
+        laststart = 0;
+        putchar(c);
+        break;
+      case SPACE: 
+        if (state == IN) {
+          if (curpos % tabsize == 0) {
+            laststart = curpos;
+            putchar(TAB);
+          }
+        } else {
+          state = IN;
+          laststart = curpos;
+        }
+        break;
+      default:
+        if (state == IN) {
+          if (curpos % tabsize == 0)
+            putchar(TAB);
+          else {
+            if ((curpos - laststart == 1) && (laststart % tabsize != 0))
+              putchar(SPACE);
+            else
+              putchar(TAB);
+          }
+          state = OUT;
+          laststart = 0;
+        }
+        putchar(c);
+        break;
+    }
+#endif
+
+#if !SWITCH
+    if (c == EOL) {
+      if (state == IN) {
+        state = OUT;
+        putchar(TAB);
+      }
+      curpos = 0;
+      laststart = 0;
+      putchar(EOL);
+    } else if (c == SPACE) {
+      if (state == IN) {
+        if (curpos % tabsize == 0) {
+          laststart = curpos;
+          putchar(TAB);
+        }
+      } else {
+        state = IN;
+        laststart = curpos;
+      }
     } else {
-      is_eol = 1;
+      if (state == IN) {
+        if (curpos % tabsize == 0)
+          putchar(TAB);
+        else {
+          if ((curpos - laststart == 1) && (laststart % tabsize != 0))
+            putchar(SPACE);
+          else
+            putchar(TAB);
+        }
+        state = OUT;
+        laststart = 0;
+      }
+      putchar(c);
     }
-    if (i % tabsize < (tabsize - 1) && !is_eol) {
-      i++;
-      continue;
-    }
-    c_out += process_column(col, tabsize, is_eol);
-    if (is_eol) {
-      putchar('\n');
-      c_out++;
-      is_eol = 0;
-    }
+#endif
+
+    if (c != EOL)
+      curpos++;
   }
-//   printf("counter in: %u, counter out: %u\n", c_in, c_out);
   return 0;
 }
 
-unsigned process_column(char *column, unsigned char length, unsigned char is_eol) {
-  unsigned count = 0;
-
-  int pos = length - 1;
-  if (is_eol) {
-//  remove trailing spaces before end of line
-    while (pos >= 0 && column[pos--] == '\0')
-      length--;
-    for (unsigned j = 1; j <= length; j++) {
-      if (column[length - j] == '\0')
-        continue;
-      if (column[length - j] == SPACE)
-        column[length - j] = '\0';
-      else
-        break;
-    }
-  }
-  for (unsigned j = 0; j < length; j++) {
-    if (column[j] != '\0') {
-      putchar(column[j]);
-      column[j] = '\0';
-      count++;
-    }
-  }
-  for (unsigned j = 0; j < length; j++)
-    column[j] = '\0';
-  return count;
-}

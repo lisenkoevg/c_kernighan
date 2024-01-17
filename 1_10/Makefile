@@ -26,4 +26,5 @@ clean:
 test:
 	../runtest.bat detab 1\* 7
 	../runtest.bat detab 2\* 13
-	../runtest.bat entab \*
+	../runtest.bat entab 1\* 4
+	../runtest.bat entab 2\* 9
