@@ -1,7 +1,10 @@
 //
 // 1.10 Exc 1.21
 // Replace spaces with tabs
-//
+// First space(s) in column -> TAB
+// Last space(s) in column -> TAB
+// Any adjacent spaces inside column -> TAB
+// Only single space inside column (not in the start and not in the end of column) remains
 
 #include <stdio.h>
 #include <stdlib.h>
