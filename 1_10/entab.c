@@ -27,7 +27,6 @@ int main(int argc, char **argv) {
     tabsize = atoi((const char *)argv[1]);
     assert(tabsize > 0);
   }
-  printf("tabsize: %d\n\n", tabsize);
 
   char c;
   int state = OUT;
@@ -87,6 +86,7 @@ int main(int argc, char **argv) {
         break;
     }
   }
+  printf("\n\ntabsize: %d\n", tabsize);
   return 0;
 }
 
