@@ -32,6 +32,10 @@ int main(int argc, char **argv) {
   int col = 0;
 
   while ((c = getchar()) != EOF) {
+
+    assert(col >= 0 && col <= tabsize);
+    assert(laststart >= 0 && laststart < tabsize);
+
     switch (c) {
       case EOL: 
       case CR: 
@@ -52,12 +56,11 @@ int main(int argc, char **argv) {
             putchar(TAB);
             laststart = 0;
           }
-          col++;
         } else {
           state = IN;
           laststart = col;
-          col++;
         }
+        col++;
         break;
       default:
         if (col == tabsize)
@@ -68,7 +71,6 @@ int main(int argc, char **argv) {
           else {
             if ((col - laststart == 1) && (laststart != 0)) {
               putchar(SPACE);
-              col++;
             } else {
               putchar(TAB);
               col = 0;
