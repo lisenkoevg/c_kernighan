@@ -5,14 +5,14 @@ else
   ext = .exe
 endif
 
-gcc_params = -g -Wall -Werror
-objects = detab entab
+# warn = -Wno-unused-but-set-variable -Wno-unused-variable
+gcc_params = -g -Wall -Werror $(warn)
+
+objects = detab entab wrap
 
 all: $(objects)
 
 # include ../common/Makefile
-
-entab: ../common/common.o
 
 $(objects): %: %.c
 	gcc $(gcc_params) -o $@$(ext) $<
@@ -28,3 +28,6 @@ test:
 	../runtest.bat detab 2\* 13
 	../runtest.bat entab 1\* 4
 	../runtest.bat entab 2\* 9
+	../runtest.bat wrap 1\* 5
+	../runtest.bat wrap 2\* 5
+	../runtest.bat wrap 3\* 20
