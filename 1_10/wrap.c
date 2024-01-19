@@ -36,37 +36,35 @@ int main(int argc, char **argv) {
       putword(word, pos_word, is_first_word);
       putchar(EOL);
       pos_line = pos_word = 0;
-      continue;
-    }
-    if (pos_line < wrap_at) {
-      if (ch == SPACE) {
+    } else if (ch == SPACE) {
+      if (pos_line < wrap_at) {
         putword(word, pos_word, is_first_word);
         pos_word = 0;
+        pos_line++;
       } else {
-        word[pos_word++] = ch;
-      }
-    } else {
-      if (ch == SPACE) {
         putword(word, pos_word, is_first_word);
         putchar(EOL);
         pos_line = pos_word = 0;
-        continue;
+      }
+    } else {
+      if (pos_line < wrap_at) {
+        word[pos_word++] = ch;
+        pos_line++;
       } else {
         if (is_first_word) {
           putword(word, pos_word - 1, 1);
           putchar(WRAP_SYMB);
           putchar(EOL);
           word[0] = word[pos_word - 1];
-          pos_line = pos_word = 1;
-          word[pos_word++] = ch;
+          word[1] = ch;
+          pos_line = pos_word = 2;
         } else {
           putchar(EOL);
           word[pos_word++] = ch;
-          pos_line = 0;
+          pos_line = 1;
         }
       }
     }
-    pos_line++;
   }
   putword(word, pos_word, 1);
   return 0;
