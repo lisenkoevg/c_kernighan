@@ -32,38 +32,42 @@ int main(int argc, char **argv) {
     assert(pos_word >= 0 && pos_word <= wrap_at);
 
     char is_first_word = pos_word >= pos_line;
-    if (ch == EOL) {
-      putword(word, pos_word, is_first_word);
-      putchar(EOL);
-      pos_line = pos_word = 0;
-    } else if (ch == SPACE) {
-      if (pos_line < wrap_at) {
-        putword(word, pos_word, is_first_word);
-        pos_word = 0;
-        pos_line++;
-      } else {
+    switch (ch) {
+      case EOL:
         putword(word, pos_word, is_first_word);
         putchar(EOL);
         pos_line = pos_word = 0;
-      }
-    } else {
-      if (pos_line < wrap_at) {
-        word[pos_word++] = ch;
-        pos_line++;
-      } else {
-        if (is_first_word) {
-          putword(word, pos_word - 1, 1);
-          putchar(WRAP_SYMB);
-          putchar(EOL);
-          word[0] = word[pos_word - 1];
-          word[1] = ch;
-          pos_line = pos_word = 2;
+        break;
+      case SPACE:
+        if (pos_line < wrap_at) {
+          putword(word, pos_word, is_first_word);
+          pos_word = 0;
+          pos_line++;
         } else {
+          putword(word, pos_word, is_first_word);
           putchar(EOL);
-          word[pos_word++] = ch;
-          pos_line = 1;
+          pos_line = pos_word = 0;
         }
-      }
+        break;
+      default:
+        if (pos_line < wrap_at) {
+          word[pos_word++] = ch;
+          pos_line++;
+        } else {
+          if (is_first_word) {
+            putword(word, pos_word - 1, 1);
+            putchar(WRAP_SYMB);
+            putchar(EOL);
+            word[0] = word[pos_word - 1];
+            word[1] = ch;
+            pos_line = pos_word = 2;
+          } else {
+            putchar(EOL);
+            word[pos_word++] = ch;
+            pos_line = 1;
+          }
+        }
+        break;
     }
   }
   putword(word, pos_word, 1);
