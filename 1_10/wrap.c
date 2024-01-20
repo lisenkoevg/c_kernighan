@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
         }
         break;
       default:
-        if (pos_line < wrap_at) {
+        if (pos_line < wrap_at && pos_word < wrap_at) {
           word[pos_word++] = ch;
           pos_line++;
         } else {
