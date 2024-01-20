@@ -38,9 +38,9 @@ clean:
 	rm -f *.exe *.out
 
 test:
-	../runtest.bat count_all
-	../runtest.bat split_word
-	../runtest.bat split_char
+	bash ../runtest.sh count_all
+	bash ../runtest.sh split_word
+	bash ../runtest.sh split_char
 
 .PHONY: Makefile
 

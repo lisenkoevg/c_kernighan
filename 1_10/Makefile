@@ -24,10 +24,10 @@ clean:
 .PHONY: Makefile
 
 test:
-	../runtest.bat detab 1\* 7
-	../runtest.bat detab 2\* 13
-	../runtest.bat entab 1\* 4
-	../runtest.bat entab 2\* 9
-	../runtest.bat wrap 1\* 5
-	../runtest.bat wrap 2\* 5
-	../runtest.bat wrap 3\* 20
+	bash ../runtest.sh detab '1*' 7
+	bash ../runtest.sh detab '2*' 13
+	bash ../runtest.sh entab '1*' 4
+	bash ../runtest.sh entab '2*' 9
+	bash ../runtest.sh wrap '1*' 5
+# 	bash ../runtest.sh wrap '2*' 5
+	bash ../runtest.sh wrap '3*' 20

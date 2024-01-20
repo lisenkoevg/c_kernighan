@@ -17,5 +17,5 @@ clean:
 	rm -f *.exe *.out
 
 test:
-	../runtest.bat histogram_length
-	../runtest.bat histogram_char
+	bash ../runtest.sh histogram_length
+	bash ../runtest.sh histogram_char

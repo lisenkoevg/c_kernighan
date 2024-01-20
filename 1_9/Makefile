@@ -20,7 +20,7 @@ clean:
 	rm -f *.exe
 
 test:
-	../runtest.bat longest_line
-	../runtest.bat longer_than \* 70
-	../runtest.bat remove_trailing_blanks
-	../runtest.bat reverse_
+	bash ../runtest.sh longest_line
+	bash ../runtest.sh longer_than '*' 70
+	bash ../runtest.sh remove_trailing_blanks
+	bash ../runtest.sh reverse_

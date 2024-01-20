@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-if "%1"=="*" (
+if "%1"=="all" (
   goto :runAll
   goto :eof
 )
@@ -31,7 +31,7 @@ set c=0 & set cp=0 & set cf=0
 for %%i in (%mask%.in) do (
   set tn=%%~ni
 
-  %pf% %param1% < %%i > !tn!_actual.out
+  %pf% %param1% < %%i | sed s/\r// > !tn!_actual.out
   diff -N !tn!.out !tn!_actual.out > nul && (
     set /a cp=cp+1 > nul
     del !tn!_actual.out
