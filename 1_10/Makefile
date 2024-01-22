@@ -29,5 +29,6 @@ test:
 	bash ../runtest.sh entab '1*' 4
 	bash ../runtest.sh entab '2*' 9
 	bash ../runtest.sh wrap '1*' 5
-# 	bash ../runtest.sh wrap '2*' 5
+	bash ../runtest.sh wrap '2*' 5
 	bash ../runtest.sh wrap '3*' 20
+	bash ../runtest.sh wrap 'g*' 40

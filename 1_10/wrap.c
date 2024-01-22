@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
           } else {
             putchar(EOL);
             word[pos_word++] = ch;
-            pos_line = 1;
+            pos_line = pos_word;
           }
         }
         break;
