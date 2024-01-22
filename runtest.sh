@@ -39,10 +39,10 @@ main() {
   done
   popd > /dev/null
   if [[ $c == $cp ]]; then
-    nircmd beep 5000 100
+    beep 5000 100
     echo_green Total: $c, passed: $cp, failed: $cf
   else
-    nircmd beep 1000 100
+    beep 1000 100
     echo_red Total: $c, passed: $cp, failed: $cf
   fi
 }
@@ -61,6 +61,8 @@ run_test() {
   fi
   (( c++ ))
 }
+
+beep() { uname | grep CYGWIN > /dev/null && nircmd beep $1 $2; }
 
 test_all() {
   set +f
