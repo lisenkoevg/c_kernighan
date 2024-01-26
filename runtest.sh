@@ -34,6 +34,10 @@ main() {
   cf=0
   pushd $testdir > /dev/null
   set +f
+  if ! stat $mask.in > /dev/null 2>&1 ; then
+    echo "Tests $mask.in not exist"
+    exit 0
+  fi
   for t in $mask.in; do
     run_test $t
   done

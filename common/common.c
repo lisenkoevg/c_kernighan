@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include "common.h"
+#include <stdio.h>
 
 char is_blank(char c) {
   if (c == ' ' || c == '\n' || c == '\r' || c == '\t')
@@ -34,3 +34,29 @@ int mygetline(char *line, int lim) {
   return i;
 }
 
+// If args contain argument in format '__xxx',
+// then open 'xxx' file for reading
+// and return pointer to file descriptor
+// Used to cope with redirection bug in cygwin-gdb https://sourceware.org/legacy-ml/cygwin/1999-04/msg00308.html
+FILE *open_file_from_arg(int argc, char **argv) {
+  char *test_file;
+  int test_file_i;
+
+  if (argc == 1)
+    return NULL;
+
+  for (int i = 0; i < argc; i++) {
+    if (argv[i][0] == '_' && argv[i][1] == '_') {
+      test_file_i = i;
+      test_file = argv[i];
+      break;
+    }
+  }
+  if (test_file_i == 0)
+    return NULL;
+  for (int i = 0; (test_file[i] = test_file[i + 2]); i++)
+    ;
+  FILE *fd;
+  fd = fopen(test_file, "r");
+  return fd;
+}
