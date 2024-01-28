@@ -18,7 +18,7 @@ include $(addsuffix .d,$(objects) $(common))
 
 .PHONY: clean
 clean:
-	rm -f *.exe *.out *.d *.o $(foreach ext,o d, $(common_dir)/*.$(ext))
+	rm -f *.exe *.out *.d *.o $(foreach ext,o d, $(common_dir)/*.$(ext)) $(objects)
 
 test:
 # 	bash ../runtest.sh detab '1*' 7
