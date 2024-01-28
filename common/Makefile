@@ -1,5 +1,14 @@
-common.o: common.c common.h
-	gcc -c -g -Werror -Wall -o common.o $<
+objects = common
+
+all: $(addsuffix .o,$(objects))
+
+include ../Make_deps
+
+include $(addsuffix .d,$(objects))
+
+.PHONY: clean
+clean:
+	rm -f *.d *.o
 
 # test_open_file_from_arg: test_open_file_from_arg.c common.o
 # 	gcc -g -o $@ common.o $<

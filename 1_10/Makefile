@@ -6,23 +6,19 @@ endif
 
 warn=-Wno-unused-but-set-variable -Wno-unused-variable
 CFLAGS+=-g -Wall -Werror $(warn)
-
-objects = detab entab wrap uncomment
-common = ../common/common
-common_all = $(foreach ext,o c h,$(common).$(ext))
+objects = detab entab wrap uncomment syntax
 all: $(objects)
 
-uncomment: addLib = $(addsuffix .o,$(common))
-uncomment: $(common_all)
+include ../Make_common
+common_objects = $(addsuffix .o,$(common_libs_f))
+uncomment syntax: $(common_objects)
 
-include ../common/Makefile
-
-$(objects): %: %.c
-	gcc $(CFLAGS) -o $@$(ext) $< $(addLib)
+include ../Make_deps
+include $(addsuffix .d,$(objects) $(common))
 
 .PHONY: clean
 clean:
-	rm -f *.exe *.out
+	rm -f *.exe *.out *.d *.o $(foreach ext,o d, $(common_dir)/*.$(ext))
 
 test:
 # 	bash ../runtest.sh detab '1*' 7
@@ -33,6 +29,7 @@ test:
 # 	bash ../runtest.sh wrap '2*' 5
 # 	bash ../runtest.sh wrap '3*' 20
 # 	bash ../runtest.sh wrap 'g*' 40
-	bash ../runtest.sh uncomment '1*'
-	bash ../runtest.sh uncomment '2*'
+# 	bash ../runtest.sh uncomment '1*'
+# 	bash ../runtest.sh uncomment '2*'
+	bash ../runtest.sh syntax
 

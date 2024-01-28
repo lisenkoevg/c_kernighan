@@ -1,0 +1,6 @@
+common_dir = ../common
+common_libs = common
+common_libs_f = $(foreach l,$(common_libs),$(common_dir)/$l)
+
+$(addsuffix .o,$(common_libs_f)): $(foreach ext,c h,$(common_libs_f).$(ext))
+	@$(MAKE) -C $(common_dir)
