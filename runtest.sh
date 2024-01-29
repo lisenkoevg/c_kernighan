@@ -45,9 +45,11 @@ main() {
   if [[ $c == $cp ]]; then
     beep 5000 100
     echo_green Total: $c, passed: $cp, failed: $cf
+    return 0
   else
     beep 1000 100
     echo_red Total: $c, passed: $cp, failed: $cf
+    return 1
   fi
 }
 
@@ -70,11 +72,17 @@ beep() { uname | grep CYGWIN > /dev/null && nircmd beep $1 $2; }
 
 test_all() {
   set +f
-  for dir in $(ls -1d *[1]_[0-9]*); do
+  for dir in $(ls -d *[1]_[0-9]* | sort -V); do
     set -f
     pushd $dir > /dev/null
-    basename $(pwd)
-    make -Br -j --output-sync=target && make test && make clean
+    echo ==================== Testing $(basename $(pwd)) ========================
+    make -B -j --output-sync=target
+    if [[ $? -ne 0 ]] ; then
+      echo_red "make: error in directory $dir"
+    else
+     make test || echo_red "make test: error in directory $dir"
+     make clean
+    fi
     popd > /dev/null
   done
 }
