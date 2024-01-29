@@ -28,7 +28,7 @@ include $(addsuffix .d,$(objects) $(common))
 clean:
 	rm -f *.exe *.out *.d *.o $(foreach ext,o d, $(common_dir)/*.$(ext)) $(objects) *.stackdump
 
-test:
+testAll:
 	bash ../runtest.sh detab '1*' 7
 	bash ../runtest.sh detab '2*' 13
 	bash ../runtest.sh entab '1*' 4
@@ -39,5 +39,8 @@ test:
 	bash ../runtest.sh wrap 'g*' 40
 	bash ../runtest.sh uncomment '1*'
 	bash ../runtest.sh uncomment '2*'
+	bash ../runtest.sh syntax
+
+test:
 	bash ../runtest.sh syntax
 
