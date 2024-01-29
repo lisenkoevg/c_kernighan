@@ -37,8 +37,8 @@ static region_t *bracket_base;
 region_t *add_node(region_t **base);
 region_t *find_node(const region_t *base);
 void free_list(region_t **b);
-void dump_list(region_t *base, char c);
-void dump_node(region_t *p, region_t *base);
+void dump_list(const region_t *const base, char c);
+void dump_node(const region_t *p, const region_t *const base);
 void print_not_paired(char c, int pos, int line, int col);
 int check_not_paired_open(region_t *base, char c);
 
@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
       case CLOSE_BRACE:
       case CLOSE_PARENTHESIS:
       case CLOSE_BRACKET:
-        br = find_node((const region_t *)*cToBase(ch));
+        br = find_node((const region_t *)(*cToBase(ch)));
         if (br) {
           br->end_pos = pos;
           br->end_line = line;
@@ -109,6 +109,7 @@ int main(int argc, char **argv) {
   dump_list(*cToBase(OPEN_BRACE), OPEN_BRACE);
   dump_list(*cToBase(OPEN_PARENTHESIS), OPEN_PARENTHESIS);
   dump_list(*cToBase(OPEN_BRACKET), OPEN_BRACKET);
+
   free_list(cToBase(OPEN_BRACE));
   free_list(cToBase(OPEN_PARENTHESIS));
   free_list(cToBase(OPEN_BRACKET));
@@ -124,28 +125,29 @@ region_t *add_node(region_t **base) {
     printf("Malloc error\n");
     abort();
   }
-  if (!*base) {
-    *base = res;
-  }
-  res->next = res->prev = NULL;
-  region_t *last = *base;
-  while (last->next) last = last->next;
-  if (last != res) {
-    last->next = res;
-    res->prev = last;
-  }
   res->start_line = res->end_line = -1;
   res->start_col = res->end_col = -1;
   res->start_pos = res->end_pos = -1;
+  if (!*base) {
+    *base = res->next = res->prev = res;
+  } else {
+    region_t *last = (*base)->prev;
+    last->next = res;
+    res->prev = last;
+    res->next = *base;
+    (*base)->prev = res;
+  }
   return res;
 }
 
 region_t *find_node(const region_t *base) {
   if (!base) return (region_t *)NULL;
-  const region_t *p = (const region_t *)base;
-  while (p->next) p = p->next;
-  while (p && p->end_pos != -1) p = p->prev;
-  return (region_t *)p;
+  const region_t *p = base->prev;
+  do {
+    if (p->end_pos == -1) return (region_t *)p;
+    p = p->prev;
+  } while (p != base->prev);
+  return (region_t *)NULL;
 }
 
 void free_list(region_t **base) {
@@ -156,7 +158,7 @@ void free_list(region_t **base) {
     p = cur;
     cur = cur->next;
     free(p);
-  } while (cur);
+  } while (cur != *base);
   *base = NULL;
 }
 
@@ -167,17 +169,17 @@ void print_not_paired(char c, int pos, int line, int col) {
 int check_not_paired_open(region_t *base, char c) {
   int res = 1;
   region_t *p = base;
-  while (p) {
-    if (p->end_pos == -1) {
-      print_not_paired(c, p->start_pos, p->start_line, p->start_col);
-      res = 0;
-    }
-    p = p->next;
-  }
+  if (base) do {
+      if (p->end_pos == -1) {
+        print_not_paired(c, p->start_pos, p->start_line, p->start_col);
+        res = 0;
+      }
+      p = p->next;
+    } while (p != base);
   return res;
 }
 
-void dump_node(region_t *p, region_t *base) {
+void dump_node(const region_t *p, const region_t *const base) {
 #ifdef DUMP_TO
   if (!p) return;
   fprintf(DUMP_TO, "adr: %p (%6ld), ", p, ADIFF(p, base));
@@ -198,15 +200,15 @@ void dump_node(region_t *p, region_t *base) {
 #endif
 }
 
-void dump_list(region_t *base, char c) {
-  region_t *p;
+void dump_list(const region_t *const base, char c) {
+  const region_t *p;
 #ifdef DUMP_TO
   fprintf(DUMP_TO, "Dump list for \"%c\"\n", c);
   if (!base) return;
-  p = base;
+  p = (const region_t *)base;
   do {
     dump_node(p, base);
     p = p->next;
-  } while (p);
+  } while (p != base);
 #endif
 }
