@@ -16,7 +16,9 @@
 #define CLOSE_BRACKET ']'
 #define EOL '\n'
 
-// #define DUMP_TO stderr
+#define ADIFF(p1, p2) ((size_t)(p1) - (size_t)(p2))
+
+#define DUMP_TO stderr
 
 typedef struct node {
   int start_pos;
@@ -33,7 +35,7 @@ static region_t *parenthesis_base;
 static region_t *bracket_base;
 
 region_t *add_node(region_t **base);
-region_t *find_node(region_t *base);
+region_t *find_node(const region_t *base);
 void free_list(region_t **b);
 void dump_list(region_t *base, char c);
 void dump_node(region_t *p, region_t *base);
@@ -82,7 +84,7 @@ int main(int argc, char **argv) {
       case CLOSE_BRACE:
       case CLOSE_PARENTHESIS:
       case CLOSE_BRACKET:
-        br = find_node(*cToBase(ch));
+        br = find_node((const region_t *)*cToBase(ch));
         if (br) {
           br->end_pos = pos;
           br->end_line = line;
@@ -122,10 +124,10 @@ region_t *add_node(region_t **base) {
     printf("Malloc error\n");
     abort();
   }
-  res->next = res->prev = NULL;
   if (!*base) {
     *base = res;
   }
+  res->next = res->prev = NULL;
   region_t *last = *base;
   while (last->next) last = last->next;
   if (last != res) {
@@ -138,25 +140,12 @@ region_t *add_node(region_t **base) {
   return res;
 }
 
-region_t *find_node(region_t *base) {
+region_t *find_node(const region_t *base) {
   if (!base) return (region_t *)NULL;
-  region_t *p = base;
+  const region_t *p = (const region_t *)base;
   while (p->next) p = p->next;
   while (p && p->end_pos != -1) p = p->prev;
-  return p;
-}
-
-void dump_list(region_t *base, char c) {
-  region_t *p;
-#ifdef DUMP_TO
-  fprintf(DUMP_TO, "Dump list for \"%c\"\n", c);
-  if (!base) return;
-  p = base;
-  do {
-    dump_node(p, base);
-    p = p->next;
-  } while (p);
-#endif
+  return (region_t *)p;
 }
 
 void free_list(region_t **base) {
@@ -188,20 +177,18 @@ int check_not_paired_open(region_t *base, char c) {
   return res;
 }
 
-size_t adiff(region_t *p1, region_t *p2) { return (size_t)p1 - (size_t)p2; }
-
 void dump_node(region_t *p, region_t *base) {
 #ifdef DUMP_TO
   if (!p) return;
-  fprintf(DUMP_TO, "adr: %p (%6ld), ", p, adiff(p, base));
+  fprintf(DUMP_TO, "adr: %p (%6ld), ", p, ADIFF(p, base));
   fprintf(DUMP_TO, "prev: ");
   if (p->prev)
-    fprintf(DUMP_TO, "%6ld, ", adiff(p->prev, base));
+    fprintf(DUMP_TO, "%6ld, ", ADIFF(p->prev, base));
   else
     fprintf(DUMP_TO, "(NULL), ");
   fprintf(DUMP_TO, "next: ");
   if (p->next)
-    fprintf(DUMP_TO, "%6ld, ", adiff(p->next, base));
+    fprintf(DUMP_TO, "%6ld, ", ADIFF(p->next, base));
   else
     fprintf(DUMP_TO, "(NULL), ");
   fprintf(DUMP_TO, "start: %4d(%3d:%2d), ", p->start_pos, p->start_line,
@@ -211,3 +198,15 @@ void dump_node(region_t *p, region_t *base) {
 #endif
 }
 
+void dump_list(region_t *base, char c) {
+  region_t *p;
+#ifdef DUMP_TO
+  fprintf(DUMP_TO, "Dump list for \"%c\"\n", c);
+  if (!base) return;
+  p = base;
+  do {
+    dump_node(p, base);
+    p = p->next;
+  } while (p);
+#endif
+}
