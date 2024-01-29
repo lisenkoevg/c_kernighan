@@ -44,15 +44,15 @@ int check_not_paired_open(region_t *base, char c);
 
 region_t **cToBase(char c) {
   switch (c) {
-    case OPEN_BRACE:
-    case CLOSE_BRACE:
-      return &brace_base;
-    case OPEN_PARENTHESIS:
-    case CLOSE_PARENTHESIS:
-      return &parenthesis_base;
-    case OPEN_BRACKET:
-    case CLOSE_BRACKET:
-      return &bracket_base;
+  case OPEN_BRACE:
+  case CLOSE_BRACE:
+    return &brace_base;
+  case OPEN_PARENTHESIS:
+  case CLOSE_PARENTHESIS:
+    return &parenthesis_base;
+  case OPEN_BRACKET:
+  case CLOSE_BRACKET:
+    return &bracket_base;
   }
   return (region_t **)NULL;
 }
@@ -68,39 +68,40 @@ int main(int argc, char **argv) {
   while ((ch = fgetc(fd ? fd : stdin)) != EOF) {
     region_t *br;
     switch (ch) {
-      case EOL:
-        line++;
-        pos++;
-        col = 0;
-        continue;
-      case OPEN_BRACE:
-      case OPEN_PARENTHESIS:
-      case OPEN_BRACKET:
-        br = add_node(cToBase(ch));
-        br->start_pos = pos;
-        br->start_line = line;
-        br->start_col = col;
-        break;
-      case CLOSE_BRACE:
-      case CLOSE_PARENTHESIS:
-      case CLOSE_BRACKET:
-        br = find_node((const region_t *)(*cToBase(ch)));
-        if (br) {
-          br->end_pos = pos;
-          br->end_line = line;
-          br->end_col = col;
-        } else {
-          syntax_ok = 0;
-          print_not_paired(ch, pos, line, col);
-        }
-        break;
-      default:
-        break;
+    case EOL:
+      line++;
+      pos++;
+      col = 0;
+      continue;
+    case OPEN_BRACE:
+    case OPEN_PARENTHESIS:
+    case OPEN_BRACKET:
+      br = add_node(cToBase(ch));
+      br->start_pos = pos;
+      br->start_line = line;
+      br->start_col = col;
+      break;
+    case CLOSE_BRACE:
+    case CLOSE_PARENTHESIS:
+    case CLOSE_BRACKET:
+      br = find_node((const region_t *)(*cToBase(ch)));
+      if (br) {
+        br->end_pos = pos;
+        br->end_line = line;
+        br->end_col = col;
+      } else {
+        syntax_ok = 0;
+        print_not_paired(ch, pos, line, col);
+      }
+      break;
+    default:
+      break;
     }
     col++;
     pos++;
   }
-  if (!check_not_paired_open(*cToBase(OPEN_BRACE), OPEN_BRACE)) syntax_ok = 0;
+  if (!check_not_paired_open(*cToBase(OPEN_BRACE), OPEN_BRACE))
+    syntax_ok = 0;
   if (!check_not_paired_open(*cToBase(OPEN_PARENTHESIS), OPEN_PARENTHESIS))
     syntax_ok = 0;
   if (!check_not_paired_open(*cToBase(OPEN_BRACKET), OPEN_BRACKET))
@@ -114,8 +115,10 @@ int main(int argc, char **argv) {
   free_list(cToBase(OPEN_PARENTHESIS));
   free_list(cToBase(OPEN_BRACKET));
 
-  if (syntax_ok) printf("Syntax Ok\n");
-  if (fd) fclose(fd);
+  if (syntax_ok)
+    printf("Syntax Ok\n");
+  if (fd)
+    fclose(fd);
   return 0;
 }
 
@@ -141,10 +144,12 @@ region_t *add_node(region_t **base) {
 }
 
 region_t *find_node(const region_t *base) {
-  if (!base) return (region_t *)NULL;
+  if (!base)
+    return (region_t *)NULL;
   const region_t *p = base->prev;
   do {
-    if (p->end_pos == -1) return (region_t *)p;
+    if (p->end_pos == -1)
+      return (region_t *)p;
     p = p->prev;
   } while (p != base->prev);
   return (region_t *)NULL;
@@ -153,7 +158,8 @@ region_t *find_node(const region_t *base) {
 void free_list(region_t **base) {
   region_t *cur = *base;
   region_t *p;
-  if (!cur) return;
+  if (!cur)
+    return;
   do {
     p = cur;
     cur = cur->next;
@@ -169,7 +175,8 @@ void print_not_paired(char c, int pos, int line, int col) {
 int check_not_paired_open(region_t *base, char c) {
   int res = 1;
   region_t *p = base;
-  if (base) do {
+  if (base)
+    do {
       if (p->end_pos == -1) {
         print_not_paired(c, p->start_pos, p->start_line, p->start_col);
         res = 0;
@@ -181,7 +188,8 @@ int check_not_paired_open(region_t *base, char c) {
 
 void dump_node(const region_t *p, const region_t *const base) {
 #ifdef DUMP_TO
-  if (!p) return;
+  if (!p)
+    return;
   fprintf(DUMP_TO, "adr: %p (%6ld), ", p, ADIFF(p, base));
   fprintf(DUMP_TO, "prev: ");
   if (p->prev)
@@ -204,7 +212,8 @@ void dump_list(const region_t *const base, char c) {
   const region_t *p;
 #ifdef DUMP_TO
   fprintf(DUMP_TO, "Dump list for \"%c\"\n", c);
-  if (!base) return;
+  if (!base)
+    return;
   p = (const region_t *)base;
   do {
     dump_node(p, base);
