@@ -3,9 +3,9 @@
 // Replace tabs with spaces
 //
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 #define TABSIZE 7
 
@@ -14,10 +14,10 @@ int main(int argc, char **argv) {
   unsigned char tabsize = TABSIZE;
   if (argc > 1) {
     tabsize = atoi((const char *)argv[1]);
-    assert (tabsize > 0);
+    assert(tabsize > 0);
   }
   printf("tabsize: %u\n", tabsize);
-  while((c = getchar()) != EOF) {
+  while ((c = getchar()) != EOF) {
     if (c == '\t') {
       do {
         putchar(' ');
