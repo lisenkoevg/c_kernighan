@@ -4,9 +4,9 @@ else
   ext = .exe
 endif
 
-# To append CFLAGS execute cmd: make CFLAGS="-Wno-unused-but-set-variable -Wno-unused-variable"...
-override CFLAGS += -g -Wall -Werror
-
+# To append CFLAGS from command line execute: make CFLAGS="-Wno-unused-but-set-variable -Wno-unused-variable"...
+warn = $(shell grep -v \# warn_config | tr \\n ' ')
+override CFLAGS += -g -Wextra -Wall -Wpedantic -Werror $(warn)
 # Just experiment, run: make -n ...
 # CPPFLAGS = CPPFLAGS
 # TARGET_ARCH = TARGET_ARCH
