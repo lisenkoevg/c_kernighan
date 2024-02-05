@@ -21,12 +21,14 @@ include ../Make_common
 common_objects = $(addsuffix .o,$(common_libs_f))
 uncomment syntax: $(common_objects)
 
-include ../Make_deps
-include $(addsuffix .d,$(objects) $(common))
+ifeq (,$(filter clean,$(MAKECMDGOALS)))
+  include ../Make_deps
+  include $(addsuffix .d,$(objects) $(common))
+endif
 
 .PHONY: clean
 clean:
-	rm -f *.exe *.out *.d *.o $(foreach ext,o d, $(common_dir)/*.$(ext)) $(objects) *.stackdump
+	@rm -f *.exe *.out *.d *.o $(foreach ext,o d, $(common_dir)/*.$(ext)) $(objects) *.stackdump
 
 testAll:
 	bash ../runtest.sh detab '1*' 7
@@ -44,3 +46,5 @@ testAll:
 test:
 	bash ../runtest.sh syntax
 
+../tags: $(addsuffix .c,$(objects) $(common_libs_f)) $(addsuffix .h,$(common_libs_f))
+	cd ..; ctags -R
