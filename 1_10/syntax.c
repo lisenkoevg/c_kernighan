@@ -4,6 +4,7 @@
 //
 
 #include "../common/common.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -51,31 +52,19 @@ void free_list(region_t **b);
 void dump_list(const region_t *const base, char c);
 void dump_node(const region_t *p, const region_t *const base);
 void print_not_paired(char c, pos_t p);
-int check_not_paired(region_t *base, char c);
+void print_intersects(char c1, const region_t *p1, char c2, const region_t *p2);
+int check_not_paired(char c);
 void set_pos(pos_t *p, int pos, int line, int col);
 region_t **cToBase(char c);
-
-region_t **cToBase(char c) {
-  switch (c) {
-  case OPEN_BRACE:
-  case CLOSE_BRACE:
-    return &brace_base;
-  case OPEN_PARENTHESIS:
-  case CLOSE_PARENTHESIS:
-    return &parenthesis_base;
-  case OPEN_BRACKET:
-  case CLOSE_BRACKET:
-    return &bracket_base;
-  default:;
-  }
-  return (region_t **)NULL;
-}
+int check_intersect(char c1, char c2);
+char is_intersects(const region_t *r1, const region_t *r2);
 
 int main(int argc, char **argv) {
   FILE *fd = open_file_from_arg(argc, argv);
   char ch, prev[2] = {0, 0};
   pos_t cur = {0, 0, 0};
   pos_t non_nested = {-1, -1, -1};
+  int escape = 0;
   int syntax_ok = 1;
   while ((ch = (char)fgetc(fd ? fd : stdin)) != EOF) {
     region_t *r;
@@ -125,15 +114,22 @@ int main(int argc, char **argv) {
           state = NONE;
       break;
     case QUOTE:
+      if (state == NONE) {
+        non_nested = cur;
+        state = SINGLE_QUOTE;
+      } else if (state == SINGLE_QUOTE) {
+        if (!escape) {
+          state = NONE;
+          set_pos(&non_nested, -1, -1, -1);
+        }
+      }
+      break;
     case DQUOTE:
       if (state == NONE) {
         non_nested = cur;
-        if (ch == QUOTE)
-          state = SINGLE_QUOTE;
-        else if (ch == DQUOTE)
-          state = DOUBLE_QUOTE;
-      } else if (state == SINGLE_QUOTE || state == DOUBLE_QUOTE) {
-        if (prev[1] != BSLASH) {
+        state = DOUBLE_QUOTE;
+      } else if (state == DOUBLE_QUOTE) {
+        if (!escape) {
           state = NONE;
           set_pos(&non_nested, -1, -1, -1);
         }
@@ -147,9 +143,12 @@ int main(int argc, char **argv) {
         }
       break;
     case BSLASH:
+      escape = !escape;
       break;
     default:;
     }
+    if (ch != BSLASH)
+      escape = 0;
     cur.col++;
     cur.pos++;
     prev[0] = prev[1];
@@ -161,16 +160,25 @@ int main(int argc, char **argv) {
   }
   char tmp[5] = {OPEN_BRACE, OPEN_PARENTHESIS, OPEN_BRACKET};
   for (int i = 0; i < 3; i++)
-    if (!check_not_paired(*cToBase(tmp[i]), tmp[i]))
+    if (!check_not_paired(tmp[i]))
       syntax_ok = 0;
+  if (syntax_ok) {
+    if (!check_intersect(OPEN_BRACE, OPEN_BRACKET))
+      syntax_ok = 0;
+    if (!check_intersect(OPEN_BRACE, OPEN_PARENTHESIS))
+      syntax_ok = 0;
+    if (!check_intersect(OPEN_BRACKET, OPEN_PARENTHESIS))
+      syntax_ok = 0;
+  }
+  if (getenv("DEBUG")) {
+    dump_list(*cToBase(OPEN_BRACE), OPEN_BRACE);
+    dump_list(*cToBase(OPEN_PARENTHESIS), OPEN_PARENTHESIS);
+    dump_list(*cToBase(OPEN_BRACKET), OPEN_BRACKET);
+  }
 
-  dump_list(*cToBase(OPEN_BRACE), OPEN_BRACE);
-  dump_list(*cToBase(OPEN_PARENTHESIS), OPEN_PARENTHESIS);
-  dump_list(*cToBase(OPEN_BRACKET), OPEN_BRACKET);
   free_list(cToBase(OPEN_BRACE));
   free_list(cToBase(OPEN_PARENTHESIS));
   free_list(cToBase(OPEN_BRACKET));
-
   if (syntax_ok)
     printf("Syntax Ok\n");
   if (fd)
@@ -227,9 +235,10 @@ void print_not_paired(char c, pos_t p) {
   printf("Not paired \"%c\" at pos %d:%d\n", c, p.line + 1, p.col + 1);
 }
 
-int check_not_paired(region_t *base, char c) {
+int check_not_paired(char c) {
+  const region_t *base = *cToBase(c);
+  const region_t *p = base;
   int res = 1;
-  region_t *p = base;
   if (base)
     do {
       if (p->end.pos == -1) {
@@ -245,6 +254,68 @@ void set_pos(pos_t *p, int pos, int line, int col) {
   p->pos = pos;
   p->line = line;
   p->col = col;
+}
+
+region_t **cToBase(char c) {
+  switch (c) {
+  case OPEN_BRACE:
+  case CLOSE_BRACE:
+    return &brace_base;
+  case OPEN_PARENTHESIS:
+  case CLOSE_PARENTHESIS:
+    return &parenthesis_base;
+  case OPEN_BRACKET:
+  case CLOSE_BRACKET:
+    return &bracket_base;
+  default:;
+  }
+  return (region_t **)NULL;
+}
+
+int check_intersect(char c1, char c2) {
+  const region_t *base1 = *cToBase(c1);
+  const region_t *base2 = *cToBase(c2);
+  int result = 1;
+  if (!base1 || !base2)
+    return result;
+  const region_t *p1 = base1;
+  do {
+    assert(p1->start.pos >= 0);
+    assert(p1->end.pos >= 0);
+    const region_t *p2 = base2;
+    do {
+      assert(p2->start.pos >= 0);
+      assert(p2->end.pos >= 0);
+      if (is_intersects(p1, p2)) {
+        result = 0;
+        print_intersects(c1, (const region_t *)p1, c2, (const region_t *)p2);
+      }
+      p2 = p2->next;
+    } while (p2 != base2);
+    p1 = p1->next;
+  } while (p1 != base1);
+  return result;
+}
+
+char is_intersects(const region_t *r1, const region_t *r2) {
+  int x1 = r1->start.pos;
+  int x2 = r1->end.pos;
+  int y1 = r2->start.pos;
+  int y2 = r2->end.pos;
+  int a = x1 < y1 && y1 < x2 && x2 < y2;
+  int b = y1 < x1 && x1 < y2 && y2 < x2;
+  if (a || b)
+    return 1;
+  else
+    return 0;
+}
+
+void print_intersects(char c1, const region_t *p1, char c2,
+                      const region_t *p2) {
+  printf("\"%c\"-block %d:%d-%d:%d intersects with \"%c\"-block %d:%d-%d:%d\n",
+         c1, p1->start.line + 1, p1->start.col + 1, p1->end.line + 1,
+         p1->end.col + 1, c2, p2->start.line + 1, p2->start.col + 1,
+         p2->end.line + 1, p2->end.col + 1);
 }
 
 void dump_node(const region_t *p, const region_t *const base) {
