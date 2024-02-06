@@ -23,6 +23,17 @@
 #define ADIFF(p1, p2) (long)((size_t)(p1) - (size_t)(p2))
 #define DUMP_TO stderr
 
+#define HANDLE_QUOTE(STATE)                                                    \
+  if (state == NONE) {                                                         \
+    non_nested = cur;                                                          \
+    state = STATE;                                                             \
+  } else if (state == STATE) {                                                 \
+    if (!escape) {                                                             \
+      state = NONE;                                                            \
+      set_pos(&non_nested, -1, -1, -1);                                        \
+    }                                                                          \
+  }
+
 enum state_t {
   NONE,
   SINGLELINE_COMMENT,
@@ -114,26 +125,10 @@ int main(int argc, char **argv) {
           state = NONE;
       break;
     case QUOTE:
-      if (state == NONE) {
-        non_nested = cur;
-        state = SINGLE_QUOTE;
-      } else if (state == SINGLE_QUOTE) {
-        if (!escape) {
-          state = NONE;
-          set_pos(&non_nested, -1, -1, -1);
-        }
-      }
+      HANDLE_QUOTE(SINGLE_QUOTE);
       break;
     case DQUOTE:
-      if (state == NONE) {
-        non_nested = cur;
-        state = DOUBLE_QUOTE;
-      } else if (state == DOUBLE_QUOTE) {
-        if (!escape) {
-          state = NONE;
-          set_pos(&non_nested, -1, -1, -1);
-        }
-      }
+      HANDLE_QUOTE(DOUBLE_QUOTE);
       break;
     case ASTERISK:
       if (state == NONE)
