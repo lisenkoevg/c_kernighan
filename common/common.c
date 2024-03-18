@@ -9,7 +9,7 @@ char is_blank(char c) {
 
 void print_array_hex(char arr[], int size) {
   for (int i = 0; i <= size; i++)
-    printf("%#04x ", arr[i]);
+    printf("%#04x ", (unsigned char)arr[i]);
   printf("\n");
 }
 
@@ -25,7 +25,7 @@ int remove_trailing_blanks(char *line, int length) {
 int mygetline(char *line, int lim) {
   char c;
   int i;
-  for (i = 0; (i < lim) && ((c = getchar()) != EOF) && c != '\n'; i++) {
+  for (i = 0; (i < lim) && ((c = (char)getchar()) != EOF) && c != '\n'; i++) {
     line[i] = c;
   }
   if (c == '\n')

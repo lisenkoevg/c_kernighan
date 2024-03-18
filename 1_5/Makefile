@@ -5,42 +5,19 @@ else
   ext = .exe
 endif
 
-all: cat_ count_all count_blank count_bytes count_lines escape join_blank split_word split_char
+objects = cat_ count_all count_blank count_bytes count_lines escape join_blank split_word split_char
+override CFLAGS += -g
 
-cat_: cat_.c
-	gcc cat_.c -o cat_$(ext)
+all: $(objects)
 
-count_all: count_all.c
-	gcc count_all.c -o count_all$(ext)
-
-count_blank: count_blank.c
-	gcc count_blank.c -o count_blank$(ext)
-
-count_bytes: count_bytes.c
-	gcc count_bytes.c -o count_bytes$(ext)
-
-count_lines: count_lines.c
-	gcc count_lines.c -o count_lines$(ext)
-
-escape: escape.c
-	gcc escape.c -o escape$(ext)
-
-join_blank: join_blank.c
-	gcc join_blank.c -o join_blank$(ext)
-
-split_word: split_word.c
-	gcc split_word.c -o split_word$(ext)
-
-split_char: split_char.c
-	gcc split_char.c -o split_char$(ext)
+%: %.c
+	$(CC) $(CFLAGS) $^ -o $@$(ext)
 
 clean:
 	rm -f *.exe *.out
 
 test:
-	bash ../runtest.sh count_all
-	bash ../runtest.sh split_word
-	bash ../runtest.sh split_char
-
-.PHONY: Makefile
+	-bash ../runtest.sh count_all
+	-bash ../runtest.sh split_word
+	-bash ../runtest.sh split_char
 

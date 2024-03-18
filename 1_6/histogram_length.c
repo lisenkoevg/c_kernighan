@@ -13,11 +13,11 @@
 
 int main() {
   char c;
-  unsigned int lengths[MAX_WORD_LENGTH];
-  int counter = 0;
+  uint lengths[MAX_WORD_LENGTH];
+  uint counter = 0;
 
   init_array(lengths, MAX_WORD_LENGTH);
-  while (((c = getchar()) != EOF) && !feof(stdin)) {
+  while (((c = (char)getchar()) != EOF) && !feof(stdin)) {
     if (is_blank(c)) {
       if (counter > 0) {
         assert(counter < MAX_WORD_LENGTH);
