@@ -1,8 +1,10 @@
+#include "type.h"
+
 #define BAR "*"
 #define MAX_DIAGRAMM_WIDTH 160
 #define MAX_DIAGRAMM_HEIGHT 30
 
-void print_horiz_line(int length); 
-void print_histogram_horiz(int *arr, int size);
-void print_histogram_horiz_ch(int *, int);
-void print_histogram_vert(int *arr, int size);
+void print_horiz_line(uchar length);
+void print_histogram_horiz(uint *arr, uchar size);
+void print_histogram_horiz_ch(uint *arr, uchar size);
+void print_histogram_vert(uint *arr, uchar size);

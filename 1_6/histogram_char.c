@@ -10,14 +10,14 @@
 
 #define MAX_CHAR_CODE 255
 
-int main() {
+int main(int argc, char **argv) {
+  argv[argc - 1] = argv[argc - 1];
   char c;
-  unsigned int freqs[MAX_CHAR_CODE];
-  int counter = 0;
+  uint freqs[MAX_CHAR_CODE] = {0};
 
   init_array(freqs, MAX_CHAR_CODE);
-  while (((c = getchar()) != EOF) && !feof(stdin)) {
-    freqs[c]++;
+  while (((c = (char)getchar()) != EOF) && !feof(stdin)) {
+    freqs[(uchar)c]++;
   }
   print_histogram_horiz_ch(freqs, MAX_CHAR_CODE);
   return 0;
