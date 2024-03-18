@@ -30,7 +30,7 @@ endif
 clean:
 	@rm -f *.exe *.out *.d *.o $(foreach ext,o d, $(common_dir)/*.$(ext)) $(objects) *.stackdump
 
-testAll:
+test:
 	bash ../runtest.sh detab '1*' 7
 	bash ../runtest.sh detab '2*' 13
 	bash ../runtest.sh entab '1*' 4
@@ -43,7 +43,7 @@ testAll:
 	bash ../runtest.sh uncomment '2*'
 	bash ../runtest.sh syntax
 
-test:
+testOne:
 	bash ../runtest.sh syntax
 
 ../tags: $(addsuffix .c,$(objects) $(common_libs_f)) $(addsuffix .h,$(common_libs_f))

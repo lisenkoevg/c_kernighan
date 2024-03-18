@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
   unsigned char wrap_at = WRAP_AT;
 
   if (argc > 1) {
-    wrap_at = atoi((const char *)argv[1]);
+    wrap_at = (unsigned char)atoi((const char *)argv[1]);
     assert(wrap_at > 0);
   }
 
@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
   int pos_line = 0;
   int pos_word = 0;
 
-  while((ch = getchar()) != EOF) {
+  while((ch = (char)getchar()) != EOF) {
     assert(pos_line >= 0 && pos_line <= wrap_at);
     assert(pos_word >= 0 && pos_word <= wrap_at);
 

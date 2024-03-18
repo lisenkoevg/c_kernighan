@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
   int state_q, state_dq, state_com_single, state_com_multi;
 
   state_q = state_dq = state_com_single = state_com_multi = OUT;
-  while ((ch = fgetc(fd)) != EOF) {
+  while ((ch = (char)fgetc(fd)) != EOF) {
     switch (ch) {
     case EOL:
       if (state_com_multi == OUT) {

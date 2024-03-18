@@ -19,12 +19,10 @@
 #define EOL '\n'
 #define CR '\r'
 
-#define SWITCH 1
-
 int main(int argc, char **argv) {
   unsigned char tabsize = TABSIZE;
   if (argc > 1) {
-    tabsize = atoi((const char *)argv[1]);
+    tabsize = (unsigned char)atoi((const char *)argv[1]);
     assert(tabsize > 0);
   }
 
@@ -33,14 +31,14 @@ int main(int argc, char **argv) {
   int laststart = 0;
   int col = 0;
 
-  while ((c = getchar()) != EOF) {
+  while ((c = (char)getchar()) != EOF) {
 
     assert(col >= 0 && col <= tabsize);
     assert(laststart >= 0 && laststart < tabsize);
 
     switch (c) {
-      case EOL: 
-      case CR: 
+      case EOL:
+      case CR:
         if (state == IN) {
           state = OUT;
           putchar(TAB);
@@ -49,7 +47,7 @@ int main(int argc, char **argv) {
         laststart = 0;
         putchar(c);
         break;
-      case SPACE: 
+      case SPACE:
         if (col == tabsize)
           col = 0;
 
